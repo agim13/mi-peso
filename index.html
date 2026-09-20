@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Mi Peso</title>
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f7f9;
+        color: #172033;
+    }
+
+    .app {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 32px 20px;
+    }
+
+    header {
+        margin-bottom: 32px;
+    }
+
+    .marca {
+        margin: 0 0 8px;
+        color: #087f8c;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 28px;
+    }
+
+    .tarjeta {
+        background: white;
+        padding: 24px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        margin-bottom: 20px;
+    }
+
+    .etiqueta {
+        margin: 0;
+        font-size: 12px;
+        font-weight: bold;
+        color: #687386;
+        letter-spacing: 1px;
+    }
+
+    .peso {
+        margin: 12px 0;
+        font-size: 42px;
+        font-weight: bold;
+    }
+
+    .peso span {
+        font-size: 18px;
+        color: #687386;
+    }
+
+    .altura {
+        margin: 0;
+        color: #687386;
+    }
+
+    .boton {
+        width: 100%;
+        min-height: 52px;
+        border: 0;
+        border-radius: 12px;
+        background: #087f8c;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .boton:active {
+        transform: scale(0.98);
+    }
+    .formulario {
+        display: none;
+        margin-top: 20px;
+        padding: 24px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .formulario h2 {
+        margin-top: 0;
+        margin-bottom: 24px;
+    }
+
+    .formulario label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .formulario input {
+        width: 100%;
+        min-height: 52px;
+        margin-bottom: 20px;
+        padding: 12px;
+        border: 1px solid #d5dbe3;
+        border-radius: 10px;
+        font-size: 16px;
+    }
+
+    .boton-secundario {
+        width: 100%;
+        min-height: 52px;
+        margin-top: 10px;
+        border: 1px solid #d5dbe3;
+        border-radius: 12px;
+        background: white;
+        color: #172033;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .historial {
+    margin-top: 32px;
+    }
+
+    .historial h2 {
+        margin-bottom: 16px;
+    }
+
+    .registro {
+        
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        background: white;
+
+        padding: 18px;
+        margin-bottom: 10px;
+
+        border-radius: 12px;
+
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .fecha-registro {
+        color: #687386;
+    }
+
+    .peso-registro {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .boton-editar,
+.boton-eliminar {
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.boton-editar {
+    background: #e6f3f5;
+    color: #087f8c;
+}
+
+.boton-eliminar {
+    background: #fdeaea;
+    color: #b42318;
+}
+    .estadisticas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+    }
+
+    .tarjeta-estadistica {
+        min-width: 0;
+        background: white;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .valor-estadistica {
+        margin: 10px 0 0;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .unidad {
+        font-size: 15px;
+        color: #687386;
+    }
+
+    .clasificacion-imc {
+        margin: 6px 0 0;
+        color: #087f8c;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .dato-altura {
+        margin: 0 0 24px;
+        color: #687386;
+        font-size: 13px;
+    }
+
+    grid-template-columns: 1fr 1fr;
+
+</style>
+</head>
+
+<body>
+
+    <main class="app">
+
+        <header>
+            <p class="marca">MI PESO</p>
+            <h1>Mi seguimiento personal</h1>
+        </header>
+
+        <section class="estadisticas">
+
+            <div class="tarjeta-estadistica">
+                <p class="etiqueta">ÚLTIMO PESO</p>
+
+                <p class="valor-estadistica">
+                    <span id="pesoActual">--</span>
+                    <span class="unidad">kg</span>
+                </p>
+            </div>
+
+            <div class="tarjeta-estadistica">
+                <p class="etiqueta">CAMBIO TOTAL</p>
+
+                <p class="valor-estadistica">
+                    <span id="cambioTotal">--</span>
+                    <span class="unidad">kg</span>
+                </p>
+            </div>
+
+            <div class="tarjeta-estadistica">
+                <p class="etiqueta">REGISTROS</p>
+
+                <p class="valor-estadistica" id="numeroRegistros">
+                    0
+                </p>
+            </div>
+
+            <div class="tarjeta-estadistica">
+                <p class="etiqueta">IMC ACTUAL</p>
+
+                <p class="valor-estadistica" id="imcActual">
+                    --
+                </p>
+
+                <p class="clasificacion-imc" id="clasificacionImc">
+                    Sin datos
+                </p>
+            </div>
+
+        </section>
+
+        <p class="dato-altura">
+            IMC calculado con una altura de 161 cm
+        </p>
+
+        <button class="boton" id="abrirFormulario" type="button">
+            Registrar peso
+        </button>
+
+        <button class="boton-secundario" id="importarCsv" type="button">
+    Importar CSV
+</button>
+
+<input
+    type="file"
+    id="archivoCsv"
+    accept=".csv"
+    style="display: none;"
+>
+        
+        <section class="formulario" id="formularioPeso">
+
+            <h2 id="tituloFormulario">Registrar peso</h2>
+
+            <label for="fecha">
+                Fecha
+            </label>
+
+            <input
+                type="date"
+                id="fecha"
+            >
+
+            <label for="peso">
+                Peso (kg)
+            </label>
+
+            <input
+                type="text"
+                id="peso"
+                inputmode="decimal"
+                placeholder="Ej. 60,9"
+            >
+
+            <button class="boton" id="guardarPeso" type="button">
+                Guardar peso
+            </button>
+
+            <button class="boton-secundario" id="cancelar" type="button">
+                Cancelar
+            </button>
+
+        </section>
+        <section class="tarjeta grafica">
+
+            <h2>Evolución del peso</h2>
+
+            <canvas id="graficaPeso"></canvas>
+
+        </section>
+
+
+        <section class="historial">
+
+            <h2>Historial</h2>
+
+            <div id="listaHistorial"></div>
+
+        </section>
+    </main>
+
+
+<script>
+
+
+    // ELEMENTOS DE LA PÁGINA
+
+    const botonAbrir = document.getElementById("abrirFormulario");
+    const formulario = document.getElementById("formularioPeso");
+    const botonCancelar = document.getElementById("cancelar");
+    const botonGuardar = document.getElementById("guardarPeso");
+    const botonImportar = document.getElementById("importarCsv");
+const archivoCsv = document.getElementById("archivoCsv");
+
+    const campoFecha = document.getElementById("fecha");
+    const campoPeso = document.getElementById("peso");
+
+    const tituloFormulario =
+    document.getElementById("tituloFormulario");
+    
+    const pesoActual = document.getElementById("pesoActual");
+    const cambioTotal = document.getElementById("cambioTotal");
+    const numeroRegistros = document.getElementById("numeroRegistros");
+    const imcActual = document.getElementById("imcActual");
+    const clasificacionImc = document.getElementById("clasificacionImc");
+
+    //const datosGuardados = document.getElementById("datosGuardados");
+    const listaHistorial = document.getElementById("listaHistorial");
+    const graficaPeso = document.getElementById("graficaPeso");
+
+    //const botonComprobar =
+    //document.getElementById("comprobarStorage");
+
+    //const resultadoStorage =
+    //document.getElementById("resultadoStorage");
+
+
+    // DATOS
+
+    let registros = [];
+
+
+    // FECHA DE HOY
+
+    const hoy = new Date();
+
+    const año = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoy.getDate()).padStart(2, "0");
+
+    const fechaHoy = año + "-" + mes + "-" + dia;
+
+    campoFecha.value = fechaHoy;
+    campoFecha.max = fechaHoy;
+
+
+    // LOCALSTORAGE
+
+    function guardarRegistros() {
+
+        localStorage.setItem(
+            "registrosPeso",
+            JSON.stringify(registros)
+        );
+
+    }
+
+    function cargarRegistros() {
+
+    const datos = localStorage.getItem("registrosPeso");
+
+    if (datos === null) {
+        registros = [];
+        return;
+    }
+
+    try {
+
+        const registrosGuardados = JSON.parse(datos);
+
+        const registrosSinDuplicados = [];
+
+        for (let i = 0; i < registrosGuardados.length; i++) {
+
+            const registro = registrosGuardados[i];
+
+            const posicionExistente =
+                registrosSinDuplicados.findIndex(function (elemento) {
+                    return elemento.fecha === registro.fecha;
+                });
+
+            if (posicionExistente === -1) {
+
+                registrosSinDuplicados.push(registro);
+
+            } else {
+
+                registrosSinDuplicados[posicionExistente] = registro;
+
+            }
+
+        }
+
+        registros = registrosSinDuplicados;
+
+    } catch (error) {
+
+        registros = [];
+
+        alert("No se han podido leer los datos guardados.");
+
+    }
+
+}
+
+    // ORDENAR LOS REGISTROS
+
+    function ordenarRegistros() {
+
+        registros.sort(function (a, b) {
+            return a.fecha.localeCompare(b.fecha);
+        });
+
+    }
+
+
+
+    // CONVERTIR AAAA-MM-DD EN DD/MM/AAAA
+
+    function formatearFecha(fecha) {
+
+        const partes = fecha.split("-");
+
+        return partes[2] + "/" + partes[1] + "/" + partes[0];
+
+    }
+
+    // MOSTRAR HISTORIAL
+
+    function mostrarHistorial() {
+
+        listaHistorial.innerHTML = "";
+
+        for (let i = registros.length - 1; i >= 0; i--) {
+
+            const registro = registros[i];
+
+            const fila = document.createElement("div");
+            fila.className = "registro";
+
+
+            const fecha = document.createElement("span");
+
+            fecha.className = "fecha-registro";
+            fecha.textContent = formatearFecha(registro.fecha);
+
+
+            const peso = document.createElement("span");
+
+            peso.className = "peso-registro";
+
+            peso.textContent =
+                registro.peso.toFixed(1).replace(".", ",") + " kg";
+
+
+            const botonEditar =
+            document.createElement("button");
+
+            botonEditar.textContent = "Editar";
+
+            botonEditar.type = "button";
+
+            botonEditar.className = "boton-editar";
+
+            botonEditar.addEventListener("click", function () {
+
+                tituloFormulario.textContent = "Editar peso";
+                campoFecha.value = registro.fecha;
+
+                campoPeso.value =
+                    registro.peso.toFixed(1).replace(".", ",");
+
+                formulario.style.display = "block";
+
+                botonAbrir.style.display = "none";
+
+        });
+            const botonEliminar =
+            document.createElement("button");
+
+            botonEliminar.textContent = "Eliminar";
+
+            botonEliminar.type = "button";
+
+            botonEliminar.className = "boton-eliminar";
+
+            botonEliminar.addEventListener("click", function () {
+
+            const confirmar =
+                confirm("¿Quieres eliminar este registro?");
+
+            if (confirmar === false) {
+                return;
+            }
+
+            registros.splice(i, 1);
+
+            guardarRegistros();
+
+            actualizarEstadisticas();
+
+            mostrarHistorial();
+
+            dibujarGrafica();
+
+        });
+
+            
+            fila.appendChild(fecha);
+            fila.appendChild(peso);
+            fila.appendChild(botonEditar);
+            fila.appendChild(botonEliminar);
+
+            listaHistorial.appendChild(fila);
+
+
+
+        }
+
+    }
+    // DIBUJAR GRÁFICA
+
+    function dibujarGrafica() {
+
+        const contexto = graficaPeso.getContext("2d");
+
+        graficaPeso.width = graficaPeso.clientWidth;
+        graficaPeso.height = 250;
+
+        contexto.clearRect(
+            0,
+            0,
+            graficaPeso.width,
+            graficaPeso.height
+        );
+
+        if (registros.length === 0) {
+            return;
+        }
+        const margen = 40;
+
+        const ancho =
+            graficaPeso.width - margen * 2;
+
+        const alto =
+            graficaPeso.height - margen * 2;
+
+
+        // BUSCAMOS EL PESO MÍNIMO Y MÁXIMO
+
+        const pesos = registros.map(function (registro) {
+            return registro.peso;
+        });
+
+        const pesoMinimo =
+            Math.min(...pesos) - 1;
+
+        const pesoMaximo =
+            Math.max(...pesos) + 1;
+
+
+        // LÍNEAS HORIZONTALES DE REFERENCIA
+
+const numeroLineas = 4;
+
+contexto.font = "11px Arial";
+contexto.textAlign = "left";
+
+for (let i = 0; i <= numeroLineas; i++) {
+
+    const y =
+        margen +
+        (i / numeroLineas) * alto;
+
+    const pesoReferencia =
+        pesoMaximo -
+        (i / numeroLineas) *
+        (pesoMaximo - pesoMinimo);
+
+
+    // DIBUJAR LÍNEA
+
+    contexto.beginPath();
+
+    contexto.moveTo(margen, y);
+
+    contexto.lineTo(
+        graficaPeso.width - margen,
+        y
+    );
+
+    contexto.strokeStyle = "#e5e9ee";
+    contexto.lineWidth = 1;
+
+    contexto.stroke();
+
+
+    // MOSTRAR EL PESO DE REFERENCIA
+
+    contexto.fillStyle = "#687386";
+
+    contexto.fillText(
+        pesoReferencia.toFixed(1).replace(".", ","),
+        2,
+        y + 4
+        );
+    }
+    // DIBUJAMOS LA LÍNEA
+
+        contexto.beginPath();
+
+        for (let i = 0; i < registros.length; i++) {
+
+            const registro = registros[i];
+
+            let x;
+
+            if (registros.length === 1) {
+
+                x = graficaPeso.width / 2;
+
+            } else {
+
+                x =
+                    margen +
+                    (i / (registros.length - 1)) * ancho;
+            }
+
+
+            let y;
+
+            if (pesoMaximo === pesoMinimo) {
+
+                y = graficaPeso.height / 2;
+
+            } else {
+
+                y =
+                    margen +
+                    ((pesoMaximo - registro.peso) /
+                    (pesoMaximo - pesoMinimo)) * alto;
+            }
+
+
+            if (i === 0) {
+
+                contexto.moveTo(x, y);
+
+            } else {
+
+                contexto.lineTo(x, y);
+            }
+        }
+
+        contexto.strokeStyle = "#087f8c";
+        contexto.lineWidth = 3;
+        contexto.stroke();
+        // DIBUJAMOS UN PUNTO POR CADA REGISTRO
+
+        for (let i = 0; i < registros.length; i++) {
+
+            const registro = registros[i];
+
+            let x;
+
+            if (registros.length === 1) {
+
+                x = graficaPeso.width / 2;
+
+            } else {
+
+                x =
+                    margen +
+                    (i / (registros.length - 1)) * ancho;
+            }
+
+
+            let y;
+
+            if (pesoMaximo === pesoMinimo) {
+
+                y = graficaPeso.height / 2;
+
+            } else {
+
+                y =
+                    margen +
+                    ((pesoMaximo - registro.peso) /
+                    (pesoMaximo - pesoMinimo)) * alto;
+            }
+
+
+            contexto.beginPath();
+
+            contexto.arc(
+                x,
+                y,
+                5,
+                0,
+                Math.PI * 2
+            );
+
+            contexto.fillStyle = "#087f8c";
+
+            contexto.fill();
+            
+
+            // MOSTRAR LA FECHA
+
+            const partesFecha = registro.fecha.split("-");
+
+            const fechaCorta =
+                partesFecha[2] + "/" + partesFecha[1];
+
+            contexto.fillStyle = "#687386";
+
+            contexto.fillText(
+                fechaCorta,
+                x,
+                graficaPeso.height - 10
+            );
+        }
+
+    }
+
+    // CALCULAR ESTADÍSTICAS
+
+    function actualizarEstadisticas() {
+
+        if (registros.length === 0) {
+
+            pesoActual.textContent = "--";
+            cambioTotal.textContent = "--";
+            numeroRegistros.textContent = "0";
+            imcActual.textContent = "--";
+            clasificacionImc.textContent = "Sin datos";
+
+            return;
+        }
+
+
+        const primerRegistro = registros[0];
+
+        const ultimoRegistro =
+            registros[registros.length - 1];
+
+
+        const primerPeso = primerRegistro.peso;
+        const ultimoPeso = ultimoRegistro.peso;
+
+
+        // ÚLTIMO PESO
+
+        pesoActual.textContent =
+            ultimoPeso.toFixed(1).replace(".", ",");
+
+
+        // NÚMERO DE REGISTROS
+
+        numeroRegistros.textContent =
+            registros.length;
+
+
+        // CAMBIO TOTAL
+
+        const cambio =
+            ultimoPeso - primerPeso;
+
+        let textoCambio =
+            cambio.toFixed(1).replace(".", ",");
+
+
+        if (cambio > 0) {
+
+            textoCambio =
+                "+" + textoCambio;
+
+        }
+
+
+        cambioTotal.textContent =
+            textoCambio;
+
+
+        // IMC
+
+        const altura = 1.61;
+
+        const imc =
+            ultimoPeso / (altura * altura);
+
+
+        imcActual.textContent =
+            imc.toFixed(1).replace(".", ",");
+
+
+        // CLASIFICACIÓN DEL IMC
+
+        if (imc < 18.5) {
+
+            clasificacionImc.textContent =
+                "Bajo peso";
+
+        } else if (imc < 25) {
+
+            clasificacionImc.textContent =
+                "Peso normal";
+
+        } else if (imc < 30) {
+
+            clasificacionImc.textContent =
+                "Sobrepeso";
+
+        } else {
+
+            clasificacionImc.textContent =
+                "Obesidad";
+
+        }
+
+    }
+
+
+    // ABRIR FORMULARIO
+
+    botonAbrir.addEventListener("click", function () {
+
+        tituloFormulario.textContent = "Registrar peso";
+        campoFecha.value = fechaHoy;
+        campoPeso.value = "";
+        formulario.style.display = "block";
+        botonAbrir.style.display = "none";
+
+    });
+
+
+    // CANCELAR FORMULARIO
+
+    
+
+        botonCancelar.addEventListener("click", function () {
+
+            formulario.style.display = "none";
+            botonAbrir.style.display = "block";
+
+            tituloFormulario.textContent = "Registrar peso";
+
+            campoFecha.value = fechaHoy;
+            campoPeso.value = "";
+
+        });
+
+
+
+
+    // GUARDAR PESO
+
+    botonGuardar.addEventListener("click", function () {
+
+        const fecha = campoFecha.value;
+
+        const textoPeso =
+            campoPeso.value.trim();
+
+
+        if (fecha === "") {
+
+            alert("Selecciona una fecha.");
+            return;
+
+        }
+
+
+        if (textoPeso === "") {
+
+            alert("Introduce tu peso.");
+            return;
+
+        }
+
+
+        const pesoConvertido =
+            textoPeso.replace(",", ".");
+
+        
+
+        const peso =
+            Number(pesoConvertido);
+
+
+        if (isNaN(peso) || peso <= 0) {
+
+            alert("Introduce un peso válido.");
+            return;
+
+        }
+
+
+        // BUSCAR SI LA FECHA YA EXISTE
+
+        const posicionExistente =
+            registros.findIndex(function (registro) {
+
+                return registro.fecha === fecha;
+
+            });
+
+
+        if (posicionExistente !== -1) {
+
+            // ACTUALIZAMOS
+
+            registros[posicionExistente].peso =
+                peso;
+
+        } else {
+
+            // CREAMOS UN REGISTRO NUEVO
+
+            const nuevoRegistro = {
+
+                fecha: fecha,
+                peso: peso
+
+            };
+
+            registros.push(nuevoRegistro);
+
+        }
+
+
+        // ORDENAMOS Y GUARDAMOS
+
+        ordenarRegistros();
+
+        guardarRegistros();
+
+
+        // ACTUALIZAMOS LA PANTALLA
+
+        actualizarEstadisticas();
+
+      
+
+        mostrarHistorial();
+
+        dibujarGrafica();
+
+        // CERRAMOS EL FORMULARIO
+
+        formulario.style.display = "none";
+
+        botonAbrir.style.display = "block";
+
+        campoPeso.value = "";
+
+    });
+
+// ABRIR SELECTOR DE CSV
+
+botonImportar.addEventListener("click", function () {
+    archivoCsv.value = "";
+    archivoCsv.click();
+});
+
+archivoCsv.addEventListener("change", function () {
+
+    console.log("Archivo seleccionado");
+    const archivo = archivoCsv.files[0];
+
+    if (!archivo) {
+        return;
+    }
+
+    const lector = new FileReader();
+
+    lector.onload = function (evento) {
+
+        const contenido = evento.target.result;
+
+        const lineas = contenido.trim().split(/\r?\n/);
+        const registrosCsv = [];
+
+        for (let i = 0; i < lineas.length; i++) {
+
+            const partes = lineas[i].split(";");
+
+            const fechaCsv = partes[0];
+            const pesoCsv = partes[1];
+
+            const partesFecha = fechaCsv.split("/");
+
+            const fechaConvertida =
+                partesFecha[2] + "-" +
+                partesFecha[1] + "-" +
+                partesFecha[0];
+
+            const pesoConvertido =
+                Number(pesoCsv.replace(",", "."));
+
+            registrosCsv.push({
+                fecha: fechaConvertida,
+                peso: pesoConvertido
+            });
+        
+}
+    console.log(registrosCsv);
+    for (let i = 0; i < registrosCsv.length; i++) {
+
+    const registroCsv = registrosCsv[i];
+
+    const posicionExistente =
+        registros.findIndex(function (registro) {
+            return registro.fecha === registroCsv.fecha;
+        });
+
+   
+    if (posicionExistente === -1) {
+
+        registros.push(registroCsv);
+
+    } else {
+
+        registros[posicionExistente].peso =
+        registroCsv.peso;
+    }
+}
+
+ordenarRegistros();
+guardarRegistros();
+actualizarEstadisticas();
+
+mostrarHistorial();
+dibujarGrafica();
+
+    };
+
+    lector.readAsText(archivo);
+});
+    // INICIO DE LA APLICACIÓN
+
+    cargarRegistros();
+
+    ordenarRegistros();
+
+    guardarRegistros();
+
+    actualizarEstadisticas();
+
+    
+
+    mostrarHistorial();
+    dibujarGrafica();
+
+    window.addEventListener("resize", function () {
+
+    dibujarGrafica();
+
+});
+
+
+if ("serviceWorker" in navigator) {
+
+    navigator.serviceWorker.register("./service-worker.js")
+        .then(function () {
+            console.log("Service Worker registrado");
+        })
+        .catch(function (error) {
+            console.log("Error al registrar Service Worker:", error);
+        });
+
+}
+</script>
+
+</body>
+
+</html>
